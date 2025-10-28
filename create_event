@@ -1,0 +1,7 @@
+helm install event-generator falcosecurity/event-generator \
+  --namespace event-generator \
+  --create-namespace \
+  --set config.loop=false \
+  --set config.actions=""
+
+  helm uninstall event-generator --namespace event-generator

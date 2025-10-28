@@ -1,0 +1,16 @@
+USER-SUPPLIED VALUES:
+global:
+  clusterConfig:
+    name: sysdig-assesment
+  kspm:
+    deploy: true
+  sysdig:
+    accessKey: 65962e78-db32-43c6-980e-d8474ed2b71c
+    region: au1
+nodeAnalyzer:
+  nodeAnalyzer:
+    benchmarkRunner:
+      deploy: false
+  secure:
+    vulnerabilityManagement:
+      newEngineOnly: true

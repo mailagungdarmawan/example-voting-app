@@ -1,0 +1,49 @@
+cluster_config:
+  name: sysdig-assesment # The name of the cluster
+
+sysdig_endpoint:
+  region: au1 # Sysdig Secure instance location region. Defaults to `custom` if not specified.
+  access_key: 65962e78-db32-43c6-980e-d8474ed2b71c # Access key for Sysdig Secure instance
+
+features:
+  kubernetes_metadata:
+    enabled: true # Enable Kubernetes metadata collection for the cluster
+
+  posture:
+    host_posture:
+      enabled: true # Enable host posture assessment
+    cluster_posture:
+      enabled: true # Enable cluster posture assessment
+
+  vulnerability_management:
+    host_vulnerability_management:
+      enabled: true # Enable host vulnerability management
+    container_vulnerability_management:
+      enabled: true # Enable container vulnerability management
+    in_use:
+      enabled: true # Enable retrieval of in-use packages
+
+  detections:
+    drift_control:
+      enabled: true  # Enable Drift Detection
+    malware_control:
+      enabled: true # Enable malware control detection
+    ml_policies:
+      enabled: true # Enable machine learning policies
+    kubernetes_audit:
+      enabled: true # Enable Kubernetes audit logging
+
+  investigations:
+    activity_audit:
+      enabled: true # Enable activity audit
+    live_logs:
+      enabled: true # Enable Kubernetes live logs
+    captures:
+      enabled: true # Enable System captures
+  
+  respond:
+    response_actions:
+      enabled: true # Enable Response Actions
+
+host:
+  driver: universal_ebpf # Driver for the host agent (Accepted Values: kmod, legacy_ebpf, universal_ebpf (Linux Kernel ≥ 5. 8))
