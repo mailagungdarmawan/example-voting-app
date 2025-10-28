@@ -6,8 +6,11 @@ obj/
 node_modules/
 sysdig-setup/.terraform/
 sysdig-setup/sysdig-terraform/.terraform/
+sysdig-setup/**/.terraform/
 sysdig-setup/*.tfstate
 sysdig-setup/*.tfstate.*
+sysdig-setup/**/*.tfstate
+sysdig-setup/**/*.tfstate.*
 sysdig-setup/terraform.tfvars
 sysdig-setup/terraform.tfvars.json
 sysdig-setup/crash.log
