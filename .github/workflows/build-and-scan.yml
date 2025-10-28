@@ -1,0 +1,88 @@
+name: Build and Scan Services
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - vote/**
+      - worker/**
+      - result/**
+      - .github/workflows/build-and-scan.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - vote/**
+      - worker/**
+      - result/**
+      - .github/workflows/build-and-scan.yml
+
+env:
+  SYSDIG_SECURE_URL: https://us2.app.sysdig.com
+
+jobs:
+  build-and-scan:
+    name: Build and Scan ${{ matrix.service.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: vote
+            context: vote
+            dockerfile: vote/Dockerfile
+            image: example-voting-app-vote
+          - name: worker
+            context: worker
+            dockerfile: worker/Dockerfile
+            image: example-voting-app-worker
+          - name: result
+            context: result
+            dockerfile: result/Dockerfile
+            image: example-voting-app-result
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build ${{ matrix.service.name }} image
+        run: |
+          docker build \
+            --pull \
+            --file "${{ matrix.service.dockerfile }}" \
+            --tag "${{ matrix.service.image }}:ci-${{ github.sha }}" \
+            "${{ matrix.service.context }}"
+
+      - name: Download Sysdig CLI scanner
+        run: |
+          curl -sSL https://download.sysdig.com/scanning/sysdig-cli-scanner/latest/linux/amd64/sysdig-cli-scanner -o sysdig-cli-scanner
+          chmod +x sysdig-cli-scanner
+
+      - name: Scan ${{ matrix.service.name }} image with Sysdig
+        env:
+          SYSDIG_SECURE_TOKEN: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+        run: |
+          ./sysdig-cli-scanner scan \
+            --apiurl "${{ env.SYSDIG_SECURE_URL }}" \
+            --tags service=${{ matrix.service.name }},git_sha=${{ github.sha }} \
+            --format sarif \
+            --output results.sarif \
+            "${{ matrix.service.image }}:ci-${{ github.sha }}"
+
+      - name: Upload SARIF report
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+        continue-on-error: true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker image rm "${{ matrix.service.image }}:ci-${{ github.sha }}" || true
+          rm -f sysdig-cli-scanner results.sarif
