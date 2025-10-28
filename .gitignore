@@ -4,3 +4,14 @@ bin/
 obj/
 .vs/
 node_modules/
+sysdig-setup/.terraform/
+sysdig-setup/sysdig-terraform/.terraform/
+sysdig-setup/*.tfstate
+sysdig-setup/*.tfstate.*
+sysdig-setup/terraform.tfvars
+sysdig-setup/terraform.tfvars.json
+sysdig-setup/crash.log
+sysdig-setup/override.tf
+sysdig-setup/override.tf.json
+sysdig-setup/*override.tf
+sysdig-setup/*override.tf.json
