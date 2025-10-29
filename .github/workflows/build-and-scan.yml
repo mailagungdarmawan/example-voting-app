@@ -19,7 +19,7 @@ on:
       - .github/workflows/build-and-scan.yml
 
 env:
-  SYSDIG_SECURE_URL: https://us2.app.sysdig.com
+  SYSDIG_SECURE_URL: https://app.au1.sysdig.com
 
 jobs:
   build-and-scan:
@@ -60,7 +60,7 @@ jobs:
 
       - name: Download Sysdig CLI scanner
         run: |
-          curl -sSL https://download.sysdig.com/scanning/sysdig-cli-scanner/latest/linux/amd64/sysdig-cli-scanner -o sysdig-cli-scanner
+          curl -sSL https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/latest/linux/amd64/sysdig-cli-scanner -o sysdig-cli-scanner
           chmod +x sysdig-cli-scanner
 
       - name: Scan ${{ matrix.service.name }} image with Sysdig
@@ -73,13 +73,6 @@ jobs:
             --format sarif \
             --output results.sarif \
             "${{ matrix.service.image }}:ci-${{ github.sha }}"
-
-      - name: Upload SARIF report
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: results.sarif
-        continue-on-error: true
 
       - name: Cleanup
         if: always()
