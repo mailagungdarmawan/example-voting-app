@@ -62,6 +62,11 @@ jobs:
         run: |
           curl -sSL https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/latest/linux/amd64/sysdig-cli-scanner -o sysdig-cli-scanner
           chmod +x sysdig-cli-scanner
+      
+      - name: Check Token Lenght
+        run: echo "Token length: ${#SYSDIG_SECURE_TOKEN}"
+        env:
+           SYSDIG_SECURE_TOKEN: ${{ secrets.SYSDIG_SECURE_TOKEN }}
 
       - name: Scan ${{ matrix.service.name }} image with Sysdig
         env:
